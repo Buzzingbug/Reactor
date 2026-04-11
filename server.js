@@ -16,6 +16,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
+// Health Check for Railway
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
 // Main Dashboard Route
 app.get('/', async (req, res) => {
   if (!client.isReady()) {
@@ -73,6 +78,12 @@ app.post('/api/toggle', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Dashboard running on http://localhost:${PORT}`);
-    client.login(process.env.TOKEN);
-});
+     console.log(`Dashboard running on http://localhost:${PORT}`);
+     client.login(process.env.TOKEN);
+ });
++
++// Graceful Shutdown
++process.on('SIGTERM', () => {
++    console.log('SIGTERM signal received: closing HTTP server');
++    process.exit(0);
++});

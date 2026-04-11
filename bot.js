@@ -1,6 +1,15 @@
+require('dotenv').config();
 const { Client, GatewayIntentBits, Partials, Collection, Events, EmbedBuilder, SlashCommandBuilder, REST, Routes } = require('discord.js');
 const { getChannelConfig, updateChannelConfig, toggleChannel } = require('./database');
-require('dotenv').config();
+
+// Reliability: Prevent crashes on unhandled errors
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+});
 
 const client = new Client({
   intents: [
